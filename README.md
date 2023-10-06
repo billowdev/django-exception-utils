@@ -1,7 +1,7 @@
 # Application Exception Django Rest framework Code
 
 ### You can modified as you wish in ApplicationException that what you want to reply or response to View
-
+- exceptions.py
 ```py
 class FormatChildErrorExecption:
 	# TODO: For use with normal exception that is custom exception
