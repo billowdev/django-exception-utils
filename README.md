@@ -3,6 +3,39 @@
 ### You can modified as you wish in ApplicationException that what you want to reply or response to View
 
 ```py
+class FormatChildErrorExecption:
+	# TODO: For use with normal exception that is custom exception
+	def format_exception(self, exception, exception_type):
+		if not isinstance(exception, dict):
+			error_data = exception.to_dict()
+		else:
+			error_data = exception
+		
+		new_child_error = []
+		if error_data.get('child_error') in (None, []):
+			error_data.pop("child_error", None)
+			new_child_error = [{exception_type: error_data}]
+		else:
+			new_child_error = [{exception_type: error_data}]
+
+		return new_child_error
+
+	# TODO: to use with serializer validation error
+	def format_serializer_validation_error(self, exception, error_detail="serializers.ValidationError", exception_type="appValidationException"):
+		error_dict = dict(exception.detail)
+		child_errors = []
+
+		for field, errors in error_dict.items():
+			for error in errors:
+				child_errors.append({
+					"exception_type": exception_type,
+					"field": field,
+					"message": str(error),
+					"error": error_detail,
+				})
+
+		return child_errors
+        
 class ApplicationException(Exception):
 	def __init__(self, error_detail, field, message, child_error=None, exception_type="AppException"):
 		super().__init__(f"{error_detail} Error: Field '{field}' - {message}")
@@ -183,11 +216,12 @@ raise AppSerializerException(
 
 - mainly serializer throw an error
 ```py
+child_errors = self.format_serializer_validation_error(exception=exception, exception_type="SERIALIZER_CLASS_NAME")
 raise AppSerializerException(
-    field="",
+    field="SERIALIZER_NAME",
     message="SERIALIZER_NAME serialization encountered an error.",
     error_detail="An error occurred while serializing a SERIALIZER_NAME in SERIALIZER_CLASS_NAME.",
     exception_type="SERIALIZER_CLASS_NAME",
-    child_error=exception
+    child_error=child_errors
 )
 ```
