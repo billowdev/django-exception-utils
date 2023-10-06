@@ -1,7 +1,7 @@
 # Application Exception Django Rest framework Code
 
 ### You can modified as you wish in ApplicationException that what you want to reply or response to View
-
+- exceptions.py
 ```py
 class ApplicationException(Exception):
 	def __init__(self, error_detail, field, message, child_error=None, exception_type="AppException"):
