@@ -103,7 +103,7 @@ def get_default_message_response(response_type):
         "1xx": "This is an informational response.",
         "2xx": "The request was successful.",
         "3xx": "The request was redirected.",
-        "4xx": "Client error occurred.",
+        "4xx": "The request was failed.",
         "5xx": "Server error occurred."
     }
 
